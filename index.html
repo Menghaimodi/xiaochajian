@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="layout" content="main" />
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".example1").on("click", function(event) {
+                $(".example1").hide();
+                html2canvas(document.querySelector("body")).then((canvas) => {
+                    var dataUrl = canvas.toDataURL();
+                    $(".myimg").show();
+                    var element = document.getElementById("myimage");
+                    element.src = dataUrl;
+                });
+            });
+            $(".close").click(function() {
+                $(".myimg").hide();
+            });
+        });
+        //点击窗口触发
+        function f1() {
+            var myimg = document.getElementById("myimg");
+            var event = event || window.event;
+            //获取鼠标窗口（当前div中的位置）
+            var offsetX = event.offsetX;
+            var offsetY = event.offsetY;
+            let x = offsetX;
+            let y = offsetY;
+
+            //移动触发
+            document.onmousemove = function() {
+                var event = event || window.event;
+                //获取鼠标在浏览器中的位置
+                var clientX = event.clientX;
+                var clientY = event.clientY;
+                //计算相对位置
+                move(myimg, clientX - x, clientY - y);
+            };
+
+            //鼠标谈起触发
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        }
+
+        function move(myimg, x, y) {
+            //可视窗口的大小
+            var winWid =
+                document.documentElement.clientWidth || document.body.clientWidth;
+            var winHei =
+                document.documentElement.clientHeight || document.body.clientHeight;
+            // console.log(winWid + " === " + winHei);
+
+            // 可视窗口的大小去减掉 所需移动的窗口的大小，就可以的出这个窗口所能达到的最边缘值
+            winWid = winWid - 10 - myimg.offsetWidth;
+            winHei = winHei - 10 - myimg.offsetHeight;
+            if (x <= 0) {
+                x = 10;
+            }
+            if (y <= 0) {
+                y = 10;
+                //  = 100
+                // console.log(event.clientY);
+            }
+            if (x > winWid) {
+                x = winWid;
+            }
+            if (y > winHei) {
+                y = winHei;
+            }
+            // console.log(x, y);
+            myimg.style.top = y + "px";
+            myimg.style.left = x + "px";
+        }
+    </script>
+    <style>
+        .myimg {
+            width: 60%;
+            height: auto;
+            display: none;
+            position: fixed;
+            z-index: 99;
+            margin: 12px;
+            top: 10%;
+            left: 10%;
+            background-color: #fff;
+            text-align: center;
+            background-clip: text;
+            -webkit-background-clip: content;
+            box-shadow: 1px 1px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        #myimage {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="tu" style="background-color: #abc; padding: 200px">截图部分</div>
+
+    <input class="example1" type="button" value="截图" />
+    <br /><br /><br />
+    <div class="myimg" id="myimg" onmousedown="f1()">
+        点击下方图片保存 <a href="javascript:;" class="close">点我关闭</a>
+        <p>
+            <a><img id="myimage" src="" alt="长按保存" title="长按保存图片" /></a>
+        </p>
+    </div>
+</body>
+
+</html>
